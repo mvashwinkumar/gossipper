@@ -3,8 +3,5 @@ logs
 *.log
 npm-debug.log*
 
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-bin
-
 # Dependency directory
 node_modules
