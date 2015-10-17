@@ -20,10 +20,30 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
-
+var io = require('socket.io')(server);
 /**
  * Listen on provided port, on all network interfaces.
  */
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('createNote', function(data) {
+    console.log('createNote called');
+    socket.broadcast.emit('onNoteCreated', data);
+  });
+  socket.on('updateNote', function(data) {
+    console.log('updateNote called');
+    socket.broadcast.emit('onNoteUpdated', data);
+  });
+  socket.on('deleteNote', function(data) {
+    console.log('deleteNote called');
+    socket.broadcast.emit('onNoteDeleted', data);
+  });
+  socket.on('moveNote', function(data) {
+    console.log('moveNote called');
+    socket.broadcast.emit('onNoteMoved', data);
+  });
+});
 
 server.listen(port);
 server.on('error', onError);

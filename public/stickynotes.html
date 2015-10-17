@@ -1,0 +1,46 @@
+<html ng-app="StickyNotesApp">
+	<head>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+		<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+		<script type="text/javascript" src="javascripts/stickynotes.js"></script>
+
+		<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+		<style type="text/css">
+			.sticky-note {
+				position: absolute;
+			}
+
+			.sticky-note .title {
+				background: transparent;
+				border: none;
+				display: block;
+				height: 25px;
+				font-size: 20px;
+				font-weight: bold;
+			}
+
+			.sticky-note .body {
+				background: transparent;
+				border: none;
+				display: block;
+			}
+		</style>
+	</head>
+	<body ng-controller="StickyNotesCtrl">
+
+		<div class="navbar navbar-inverse">
+			<div class="navbar-inner">
+				<a class="brand" href="#">Sticky Notes</a>
+				<button id="createButton" ng-click="createNote()" class="btn btn-info pull-right">Create Note</button>
+			</div>
+		</div>
+
+		<div sticky-note ng-repeat='note in notes' note='note'  class="alert alert-block sticky-note">
+			<input type='button' ng-click='deleteNote(note.id)' value='&times;' class="close">
+			<input type='text' ng-model='note.title' ng-change='updateNote(note)' class="title">
+			<textarea ng-model='note.body' ng-change='updateNote(note)' class="body">{{note.body}}</textarea>
+		</div>
+	</body>	
+</html>
