@@ -16,7 +16,7 @@
 				background: transparent;
 				border: none;
 				display: block;
-				height: 25px;
+				height: 30px;
 				font-size: 20px;
 				font-weight: bold;
 			}
@@ -25,6 +25,8 @@
 				background: transparent;
 				border: none;
 				display: block;
+				overflow: auto;
+				height: 15em;
 			}
 		</style>
 	</head>
@@ -39,8 +41,8 @@
 
 		<div sticky-note ng-repeat='note in notes' note='note'  class="alert alert-block sticky-note">
 			<input type='button' ng-click='deleteNote(note.id)' value='&times;' class="close">
-			<input type='text' ng-model='note.title' ng-change='updateNote(note)' class="title">
-			<textarea ng-model='note.body' ng-change='updateNote(note)' class="body">{{note.body}}</textarea>
+			<input type='text' ng-model='note.title' ng-model-options="{ updateOn: 'default blur', debounce: { default: 500, blur: 0 } }" ng-change='updateNote(note)' class="title">
+			<textarea ng-model='note.body' ng-model-options="{ updateOn: 'default blur', debounce: { default: 500, blur: 0 } }" ng-change='updateNote(note)' class="body">{{note.body}}</textarea>
 		</div>
 	</body>	
 </html>
