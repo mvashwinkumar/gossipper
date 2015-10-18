@@ -7,8 +7,9 @@
 var app = require('../app');
 var debug = require('debug')('gossipper:server');
 var http = require('http');
+console.log('Before dbservice')
 var dbService = require('../controllers/dbService');
-
+console.log('after dbservice')
 /**
  * Get port from environment and store in Express.
  */
@@ -22,7 +23,7 @@ app.set('port', port);
 
 var server = http.createServer(app);
 var io = require('socket.io')(server);
-
+console.log('after io server')
 /**
  * Listen on provided port, on all network interfaces.
  */

@@ -1,9 +1,9 @@
-var url = 'mongodb://219.74.89.237:27017/test';
+var url = 'mongodb://testuser:testpassword@ds041164.mongolab.com:41164/gossipper';
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
 
 var dbserve = {};
-
+console.log(url);
 dbserve.init = function() {
 	console.log('dbService module initialized');
 };
