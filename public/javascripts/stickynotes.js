@@ -1,7 +1,15 @@
 var stickyNotesApp = angular.module('StickyNotesApp',[]);
 
 stickyNotesApp.controller('StickyNotesCtrl',['$scope','StickyNotesSocket', function($scope, StickyNotesSocket) {
+	
+	StickyNotesSocket.emit('getNotes', null);
+	
 	$scope.notes = [];
+	StickyNotesSocket.on('onNotesList', function(notes) {
+		console.log(notes)
+		$scope.notes = notes;
+	});
+
 	// create Note
 	StickyNotesSocket.on('onNoteCreated', function(data) {
 		$scope.notes.push(data);
@@ -10,7 +18,9 @@ stickyNotesApp.controller('StickyNotesCtrl',['$scope','StickyNotesSocket', funct
 		var note = {
 			id : new Date().getTime(),
 			title: 'New Note',
-			body: 'Pending'
+			body: 'Pending',
+			top: '50px',
+			left: '50px'
 		};
 
 		$scope.notes.push(note);
@@ -83,25 +93,25 @@ stickyNotesApp.directive('stickyNote',['StickyNotesSocket', function(StickyNotes
         element.draggable({
         	stop: function(event,ui) {
         		console.log('draggable called');
-        		StickyNotesSocket.emit('moveNote', {
-        			id: scope.note.id,
-	        		x: ui.position.left,
-	        		y: ui.position.top
-        		});        		
+        		scope.note.top = ui.position.top;
+        		scope.note.left = ui.position.left;
+        		StickyNotesSocket.emit('updateNote', scope.note);        		
         	}
         });
 
-        StickyNotesSocket.on('onNoteMoved', function(data) {
+        StickyNotesSocket.on('onNoteUpdated', function(data) {
         	if(data.id == scope.note.id) {
+        		scope.note.top = data.top;
+        		scope.note.left = data.left;
         		element.animate({
-        			left: data.x,
-        			top: data.y
+        			left: data.left,
+        			top: data.top
         		});
         	}
         });
 
-        element.css('left: 10px');
-        element.css('top: 50px');
+        element.css('left', scope.note.left);
+        element.css('top', scope.note.top);
         element.hide().fadeIn();
 	};
 

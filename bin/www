@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('gossipper:server');
 var http = require('http');
+var dbService = require('../controllers/dbService');
 
 /**
  * Get port from environment and store in Express.
@@ -21,27 +22,44 @@ app.set('port', port);
 
 var server = http.createServer(app);
 var io = require('socket.io')(server);
+
 /**
  * Listen on provided port, on all network interfaces.
  */
 
 io.on('connection', function(socket){
   console.log('a user connected');
+  dbService.init();
   socket.on('createNote', function(data) {
     console.log('createNote called');
-    socket.broadcast.emit('onNoteCreated', data);
+    dbService.insertNote(data,function(newNote) {
+      console.dir(newNote)
+      socket.broadcast.emit('onNoteCreated', newNote);
+    })    
   });
   socket.on('updateNote', function(data) {
     console.log('updateNote called');
-    socket.broadcast.emit('onNoteUpdated', data);
+    dbService.updateNote(data, function(modifiedNote) {
+      socket.broadcast.emit('onNoteUpdated', modifiedNote);
+    });    
   });
   socket.on('deleteNote', function(data) {
     console.log('deleteNote called');
-    socket.broadcast.emit('onNoteDeleted', data);
+    dbService.deleteNote(data.id,function() {
+      socket.broadcast.emit('onNoteDeleted', data);
+    });
   });
   socket.on('moveNote', function(data) {
     console.log('moveNote called');
     socket.broadcast.emit('onNoteMoved', data);
+  });
+  socket.on('getNotes', function() {
+    console.log('getNotes called');
+    dbService.getAllNotes(function(notes) {
+      console.log('getNotes CB called');
+      console.dir(notes)
+      socket.emit('onNotesList', notes);
+    });
   });
 });
 
