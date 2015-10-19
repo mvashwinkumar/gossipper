@@ -9,6 +9,7 @@ var debug = require('debug')('gossipper:server');
 var http = require('http');
 console.log('Before dbservice')
 var dbService = require('../controllers/dbService');
+dbService.init();
 console.log('after dbservice')
 /**
  * Get port from environment and store in Express.
@@ -30,7 +31,6 @@ console.log('after io server')
 
 io.on('connection', function(socket){
   console.log('a user connected');
-  dbService.init();
   socket.on('createNote', function(data) {
     console.log('createNote called');
     dbService.insertNote(data,function(newNote) {
